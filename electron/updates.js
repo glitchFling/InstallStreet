@@ -5,7 +5,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { Readable } = require('node:stream');
 const { pipeline } = require('node:stream/promises');
-const api = 'https://api.github.com/repos/UltraRyzen378/InstallStreet';
+const api = 'https://api.github.com/repos/glitchFling/InstallStreet';
 function compareVersions(a, b) {
   if (!/^\d+\.\d+\.\d+$/.test(a) || !/^\d+\.\d+\.\d+$/.test(b)) throw new Error('Invalid stable release version.');
   const x = a.split('.').map(Number), y = b.split('.').map(Number);

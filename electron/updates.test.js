@@ -25,7 +25,7 @@ function release(version='1.4.0'){return {tag_name:'v'+version,draft:false,prere
 test('checks public releases through fixed GitHub endpoints and rejects drafts or missing payloads',async t=>{
  const calls=[];let value=release();
  const updater=new Updates({version:'1.3.0',root:await fixture(t),settings:{token:()=>{throw Error('Legacy token must not be accessed');}},request:async(url,options)=>{calls.push({url,options});return Response.json(value);}});
- assert.equal((await updater.check()).phase,'available');assert.equal(calls[0].url,'https://api.github.com/repos/UltraRyzen378/InstallStreet/releases/latest');assert.equal(calls[0].options.headers.Authorization,undefined);
+ assert.equal((await updater.check()).phase,'available');assert.equal(calls[0].url,'https://api.github.com/repos/glitchFling/InstallStreet/releases/latest');assert.equal(calls[0].options.headers.Authorization,undefined);
  value={...release(),draft:true};await assert.rejects(updater.check(),/stable/);
  value={...release(),assets:[]};await assert.rejects(updater.check(),/missing/);
  value=release('1.2.0');assert.equal((await updater.check()).phase,'current');assert.equal(updater.downloaded,null);

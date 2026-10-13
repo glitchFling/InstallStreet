@@ -310,7 +310,7 @@ downloads and verifies its MSI, then asks before installing. InstallStreet opens
 again when Windows Installer succeeds.
 No app-installation or maintenance tasks are started by an InstallStreet update.
 
-Updates use published stable releases from UltraRyzen378/InstallStreet. Drafts
+Updates use published stable releases from glitchFling/InstallStreet. Drafts
 and prereleases are excluded. MSI downloads must match the release SHA256SUMS.txt;
 the administrator-only UpdateHelper verifies the hash again after the app closes.
 Windows Installer never requests an automatic restart. For portable ZIP users, this

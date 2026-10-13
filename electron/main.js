@@ -158,7 +158,7 @@ else {
     ipcMain.handle('updates:settings',event=>{validate(event);return {...updateSettings.view(),packaged:app.isPackaged,state:updates.state};});
     ipcMain.handle('updates:save',async(event,value)=>{
       validate(event);
-      if(value?.autoInstall && !updateSettings.view().autoInstall){const answer=await dialog.showMessageBox(window,{type:'warning',title:'Enable automatic installation?',message:'Allow InstallStreet to close, install verified updates when idle, and reopen afterward?',detail:'Only published stable releases from UltraRyzen378/InstallStreet are used. For a portable ZIP, updates install an MSI copy; the extracted folder is unchanged.',buttons:['Enable automatic installation','Cancel'],defaultId:1,cancelId:1,noLink:true});if(answer.response!==0)return {canceled:true};}
+      if(value?.autoInstall && !updateSettings.view().autoInstall){const answer=await dialog.showMessageBox(window,{type:'warning',title:'Enable automatic installation?',message:'Allow InstallStreet to close, install verified updates when idle, and reopen afterward?',detail:'Only published stable releases from glitchFling/InstallStreet are used. For a portable ZIP, updates install an MSI copy; the extracted folder is unchanged.',buttons:['Enable automatic installation','Cancel'],defaultId:1,cancelId:1,noLink:true});if(answer.response!==0)return {canceled:true};}
       return await updateSettings.save(value);
     });
     ipcMain.handle('updates:install-latest',event=>{validate(event);return installLatestUpdate({updates,install:()=>installUpdate(),workActive});});
