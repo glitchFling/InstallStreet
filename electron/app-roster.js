@@ -2,6 +2,7 @@ const appRoster = [
   ['winget','WinGet','utilities'],['git','Git','dev'],['gh','GitHub CLI','dev'],['chrome','Google Chrome','browsers'],
   ['codex','OpenAI Codex','dev'],['rufus','Rufus','utilities'],['vscode','Visual Studio Code','dev'],['dotnet10','.NET 10 SDK','dev'],
   ['roblox','Roblox Player','gaming'],['nvm-windows','nvm · Node.js · npm','dev'],['playwright','Playwright','dev'],['dimmer','Dimmer','utilities'],['python','Python · pip','dev'],
+  ['react','React + lucide-react','dev'],['tailwind','Tailwind CSS','dev'],['emscripten','Emscripten SDK','dev'],
   ['itunes','iTunes','media'],['icloud','iCloud','utilities'],['iloader','iLoader','utilities'],['veracrypt','VeraCrypt','utilities'],
   ['winrar','WinRAR','utilities'],['iconsextract','IconsExtract','utilities'],
   ['7zip','7-Zip','utilities'],['powertoys','Microsoft PowerToys','utilities'],['terminal','Windows Terminal','dev'],
@@ -9,16 +10,16 @@ const appRoster = [
   ['everything','Everything','utilities'],['sharex','ShareX','utilities'],['obs','OBS Studio','media'],
   ['steam','Steam','gaming'],['discord','Discord','gaming'],['nextdns','NextDNS','utilities'],
   ['googledrive','Google Drive','utilities'],['chatgpt','ChatGPT','utilities'],
-  ['ahk','AutoHotkey','dev'],['blender','Blender','media'],['clipchamp','Microsoft Clipchamp','media'],
+  ['ahk','AutoHotkey','dev'],['clipchamp','Microsoft Clipchamp','media'],
   ['davinciresolve','DaVinci Resolve','media'],['githubdesktop','GitHub Desktop','dev'],['godot','Godot Engine','dev'],
   ['homebrew','Homebrew for WSL','dev'],['scoop','Scoop','dev'],['tailscale','Tailscale','utilities'],
   ['visualstudio','Visual Studio Community 2022','dev'],['wsl','Windows Subsystem for Linux','dev'],['zoom','Zoom Workplace','media']
 ];
 const appIconExtensions = {
-  '7zip':'webp',chrome:'webp',codex:'png',discord:'png',dotnet10:'webp',firefox:'webp',
+  '7zip':'webp',chrome:'webp',codex:'png',discord:'png',dotnet10:'webp',firefox:'webp',react:'svg',tailwind:'png',emscripten:'png',
   googledrive:'svg',icloud:'webp',itunes:'webp',nextdns:'svg',obs:'webp',playwright:'png',
   powertoys:'png',roblox:'webp',sharex:'png',steam:'webp',vlc:'png',winrar:'webp',winget:'png',
-  blender:'webp',clipchamp:'svg',davinciresolve:'webp',githubdesktop:'webp',godot:'webp',
+  clipchamp:'svg',davinciresolve:'webp',githubdesktop:'webp',godot:'webp',
   homebrew:'webp',tailscale:'png',visualstudio:'webp',wsl:'webp',ahk:'png',scoop:'webp',zoom:'png'
 };
 const appRosterRoot=document.getElementById('app-roster');

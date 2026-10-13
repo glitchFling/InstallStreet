@@ -21,7 +21,7 @@ try {
     $view = $db.OpenView('SELECT `FileName` FROM `File`'); $view.Execute(); $names = @()
     while ($record = $view.Fetch()) { $names += $record.StringData(1).Split('|')[-1] }
     $view.Close()
-    foreach ($name in @('InstallStreet.exe','StorageSense.exe','node.exe','InstallStreet.Cli.exe','UpdateHelper.exe','OscdimgSetup.exe','TaskRuntime.dll','desktopn.dll','Wallpaper.dll','ConsumerFeatures.dll','Dimmer.dll','Python.dll','iTunes.dll','iCloud.dll','iLoader.dll','VeraCrypt.dll','WinRAR.dll','AutoHotkey.dll','Blender.dll','Clipchamp.dll','DaVinciResolve.dll','GitHubDesktop.dll','Godot.dll','Homebrew.dll','Scoop.dll','Tailscale.dll','VisualStudio.dll','WSL.dll','Zoom.dll','LinkedInRemoval.dll','running.ico','worker.js','index.html','install-webview2.ps1')) {
+    foreach ($name in @('InstallStreet.exe','StorageSense.exe','node.exe','InstallStreet.Cli.exe','UpdateHelper.exe','OscdimgSetup.exe','TaskRuntime.dll','desktopn.dll','Wallpaper.dll','ConsumerFeatures.dll','Dimmer.dll','Python.dll','iTunes.dll','iCloud.dll','iLoader.dll','VeraCrypt.dll','WinRAR.dll','React.dll','Tailwind.dll','Emscripten.dll','AutoHotkey.dll','Clipchamp.dll','DaVinciResolve.dll','GitHubDesktop.dll','Godot.dll','Homebrew.dll','Scoop.dll','Tailscale.dll','VisualStudio.dll','WSL.dll','Zoom.dll','LinkedInRemoval.dll','running.ico','worker.js','index.html','install-webview2.ps1')) {
         if ($names -notcontains $name) { throw "Missing MSI payload: $name" }
     }
     if ($names -contains 'VMware.dll') { throw 'VMware is disabled and must not be included in the MSI.' }

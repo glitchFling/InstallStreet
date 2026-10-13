@@ -57,6 +57,9 @@ installations are checked and skipped. Opening InstallStreet or running
 | Node.js | LTS version installed and activated through nvm-windows | `nvm-windows` |
 | npm | Bundled with the Node.js version installed by nvm-windows | `nvm-windows` |
 | Playwright | `npm init playwright@latest` with noninteractive defaults; Node/npm prerequisite; Chromium, Firefox and WebKit | `playwright` |
+| React | Vite React starter project with `react`, `react-dom`, and `lucide-react` | `react` |
+| Tailwind CSS | Vite starter project using the official Tailwind Vite plugin | `tailwind` |
+| Emscripten SDK | Official `emscripten-core/emsdk` repository; installs and activates the latest SDK | `emscripten` |
 | Dimmer | Nelson Pires 2.0.1, from the specified official ZIP; starts after installation | `dimmer` |
 | Python | Python 3.14 through `Python.Python.3.14`; existing working 3.14+ environments are skipped | `python` |
 | pip | Included with Python; repaired with `ensurepip` when needed | `python` |
@@ -75,7 +78,6 @@ installations are checked and skipped. Opening InstallStreet or running
 | Google Drive | `Google.GoogleDrive` through WinGet | `googledrive` |
 | ChatGPT for Windows | Official Microsoft Store app through WinGet (`9NT1R1C2HH7J`) | `chatgpt` |
 | AutoHotkey v2 | `AutoHotkey.AutoHotkey` through WinGet | `ahk` |
-| Blender | `BlenderFoundation.Blender` through WinGet | `blender` |
 | Microsoft Clipchamp | Microsoft Store app (`9P1J8S7CCWWT`) | `clipchamp` |
 | DaVinci Resolve | Opens the official Blackmagic Design download page for manual setup | `davinciresolve` |
 | GitHub Desktop | `GitHub.GitHubDesktop` through WinGet | `githubdesktop` |
@@ -100,6 +102,18 @@ when packaged). Select Playwright and click Install to initialize it; Check only
 not download packages. Run `npx playwright test --ui` from that project to use it.
 Current Playwright supports Windows 11+ and Windows Server 2019+, not Windows 10.
 See [Playwright installation](https://playwright.dev/docs/intro).
+
+React and Tailwind each create a starter project under `BRAINSTORM/react` and
+`BRAINSTORM/tailwind-css` in the InstallStreet data folder. They install Node.js
+through nvm-windows as a prerequisite, install npm packages, and run a production
+build to verify the project. React includes `lucide-react`. The Emscripten SDK is
+cloned from [the official SDK repository](https://github.com/emscripten-core/emsdk),
+installed under `BRAINSTORM/emsdk`, and activated for use. Launch `Open Emscripten
+Command Prompt.cmd` from that folder to open a shell with the Emscripten environment
+loaded. See [React](https://react.dev/learn/build-a-react-app-from-scratch),
+[Tailwind CSS with Vite](https://tailwindcss.com/docs/installation/using-vite), and
+[Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html) for
+the publishers' guides.
 
 WinGet bootstrap also installs the **NuGet PowerShell package provider** and
 **Microsoft.WinGet.Client PowerShell module** when needed. WinGet repair and

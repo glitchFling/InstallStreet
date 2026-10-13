@@ -33,6 +33,9 @@ internal static class InstallStreetApp
         new SetupTask("roblox", "Roblox Player", "winget"),
         new SetupTask("nvm-windows", "nvm-windows, Node.js and npm", "winget"),
         new SetupTask("playwright", "Playwright", "nvm-windows"),
+        new SetupTask("react", "React, lucide-react and Vite starter", "nvm-windows"),
+        new SetupTask("tailwind", "Tailwind CSS and Vite starter", "nvm-windows"),
+        new SetupTask("emscripten", "Emscripten SDK", "git"),
         new SetupTask("dimmer", "Dimmer 2.0.1 and desktop shortcut"),
         new SetupTask("python", "Python 3.14 and pip", "winget"),
         new SetupTask("itunes", "iTunes desktop (Apple installer)"),
@@ -64,7 +67,6 @@ internal static class InstallStreetApp
         new SetupTask("googledrive", "Google Drive", "winget"),
         new SetupTask("chatgpt", "ChatGPT for Windows (Microsoft Store)", "winget"),
         new SetupTask("ahk", "AutoHotkey", "winget"),
-        new SetupTask("blender", "Blender", "winget"),
         new SetupTask("clipchamp", "Microsoft Clipchamp (Microsoft Store)", "winget"),
         new SetupTask("davinciresolve", "DaVinci Resolve (publisher setup)"),
         new SetupTask("githubdesktop", "GitHub Desktop", "winget"),
@@ -149,6 +151,9 @@ internal static class InstallStreetApp
             case "roblox": relative = @"AppL\Roblox.dll"; break;
             case "nvm-windows": relative = @"AppL\nvm-windows.dll"; break;
             case "playwright": relative = @"AppL\Playwright.dll"; break;
+            case "react": relative = @"AppL\React.dll"; break;
+            case "tailwind": relative = @"AppL\Tailwind.dll"; break;
+            case "emscripten": relative = @"AppL\Emscripten.dll"; break;
             case "dimmer": relative = @"AppL\Dimmer.dll"; break;
             case "python": relative = @"AppL\Python.dll"; break;
             case "itunes": relative = @"AppL\iTunes.dll"; break;
@@ -180,7 +185,6 @@ internal static class InstallStreetApp
             case "googledrive": relative = @"AppL\googledrive.dll"; break;
             case "chatgpt": relative = @"AppL\chatgpt.dll"; break;
             case "ahk": relative = @"AppL\AutoHotkey.dll"; break;
-            case "blender": relative = @"AppL\Blender.dll"; break;
             case "clipchamp": relative = @"AppL\Clipchamp.dll"; break;
             case "davinciresolve": relative = @"AppL\DaVinciResolve.dll"; break;
             case "githubdesktop": relative = @"AppL\GitHubDesktop.dll"; break;

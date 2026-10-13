@@ -103,6 +103,21 @@
       "source": "BRAINSTORM/playwright.png"
     },
     {
+      "app": "react",
+      "kind": "User-provided app icon",
+      "source": "BRAINSTORM/lucide-merged.svg"
+    },
+    {
+      "app": "tailwind",
+      "kind": "User-provided app icon",
+      "source": "BRAINSTORM/tailwind.png"
+    },
+    {
+      "app": "emscripten",
+      "kind": "User-provided app icon",
+      "source": "BRAINSTORM/emscripten.png"
+    },
+    {
       "app": "7zip",
       "kind": "User-provided app icon",
       "source": "BRAINSTORM/7zip.webp"
@@ -180,11 +195,6 @@
       "app": "ahk",
       "kind": "User-provided app icon",
       "source": "BRAINSTORM/ahk.png"
-    },
-    {
-      "app": "blender",
-      "kind": "User-provided app icon",
-      "source": "BRAINSTORM/blender.webp"
     },
     {
       "app": "clipchamp",

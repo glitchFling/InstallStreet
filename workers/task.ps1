@@ -1,6 +1,6 @@
 ﻿param(
     [Parameter(Mandatory=$true)]
-    [ValidateSet('winget','git','gh','chrome','codex','rufus','playwright','nvm-windows','vscode','dotnet10','roblox','iconsextract','dimmer','python','itunes','icloud','iloader','veracrypt','winrar','desktop-apps','dark-mode','hidden-files','file-extensions','running-icon','7zip','powertoys','terminal','notepadplusplus','vlc','firefox','everything','sharex','obs','steam','discord','nextdns','googledrive','chatgpt','ahk','blender','clipchamp','davinciresolve','githubdesktop','godot','homebrew','scoop','tailscale','visualstudio','wsl','zoom','developer-mode','long-paths','disable-bing-search','taskbar-left','end-task-context')]
+    [ValidateSet('winget','git','gh','chrome','codex','rufus','playwright','nvm-windows','react','tailwind','emscripten','vscode','dotnet10','roblox','iconsextract','dimmer','python','itunes','icloud','iloader','veracrypt','winrar','desktop-apps','dark-mode','hidden-files','file-extensions','running-icon','7zip','powertoys','terminal','notepadplusplus','vlc','firefox','everything','sharex','obs','steam','discord','nextdns','googledrive','chatgpt','ahk','clipchamp','davinciresolve','githubdesktop','godot','homebrew','scoop','tailscale','visualstudio','wsl','zoom','developer-mode','long-paths','disable-bing-search','taskbar-left','end-task-context')]
     [string]$Task,
     [ValidateSet('Check','Run')][string]$Mode = 'Check'
 )
@@ -112,6 +112,107 @@ function Install-Playwright {
         & $node.Source (Join-Path $project 'node_modules\@playwright\test\cli.js') install
         if ($LASTEXITCODE -ne 0) { throw "Playwright browser installation failed: $LASTEXITCODE" }
     } finally { Pop-Location }
+}
+
+function Get-ReactProject { return (Join-Path $taskDataRoot 'BRAINSTORM\react') }
+function Get-TailwindProject { return (Join-Path $taskDataRoot 'BRAINSTORM\tailwind-css') }
+function Get-EmscriptenRoot { return (Join-Path $taskDataRoot 'BRAINSTORM\emsdk') }
+function Set-ProjectProperty($Object, [string]$Name, $Value) {
+    if ($Object.PSObject.Properties[$Name]) { $Object.$Name = $Value }
+    else { $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value }
+}
+function Set-NodeProjectFiles([string]$Project, [string]$Kind) {
+    New-Item -ItemType Directory -Path $Project -Force | Out-Null
+    $packagePath = Join-Path $Project 'package.json'
+    if (Test-Path -LiteralPath $packagePath) { $package = Get-Content -LiteralPath $packagePath -Raw | ConvertFrom-Json }
+    else {
+        $name = if ($Kind -eq 'react') { 'installstreet-react-app' } else { 'installstreet-tailwind-app' }
+        $package = ('{"name":"' + $name + '","version":"1.0.0","private":true,"type":"module","scripts":{},"dependencies":{},"devDependencies":{}}') | ConvertFrom-Json
+    }
+    if (!$package.scripts) { Set-ProjectProperty $package 'scripts' ([pscustomobject]@{}) }
+    Set-ProjectProperty $package.scripts 'dev' 'vite'
+    Set-ProjectProperty $package.scripts 'build' 'vite build'
+    if (!$package.dependencies) { Set-ProjectProperty $package 'dependencies' ([pscustomobject]@{}) }
+    if (!$package.devDependencies) { Set-ProjectProperty $package 'devDependencies' ([pscustomobject]@{}) }
+    Set-ProjectProperty $package.devDependencies 'vite' 'latest'
+    if ($Kind -eq 'react') {
+        Set-ProjectProperty $package.dependencies 'react' 'latest'; Set-ProjectProperty $package.dependencies 'react-dom' 'latest'; Set-ProjectProperty $package.dependencies 'lucide-react' 'latest'
+        Set-ProjectProperty $package.devDependencies '@vitejs/plugin-react' 'latest'
+        $files = @{
+            'index.html' = '<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>React app</title></head><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>'
+            'vite.config.js' = "import { defineConfig } from 'vite'`nimport react from '@vitejs/plugin-react'`n`nexport default defineConfig({ plugins: [react()] })`n"
+            'src/main.jsx' = "import React from 'react'`nimport { createRoot } from 'react-dom/client'`nimport App from './App.jsx'`nimport './style.css'`n`ncreateRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>)`n"
+            'src/App.jsx' = "import { Heart } from 'lucide-react'`n`nexport default function App() {`n  return <main><h1>React is ready</h1><p>Edit <code>src/App.jsx</code> to get started.</p><Heart aria-label=`"heart`" /></main>`n}`n"
+            'src/style.css' = "body { margin: 0; min-width: 320px; min-height: 100vh; font-family: system-ui, sans-serif; display: grid; place-items: center; background: #111827; color: #f9fafb; } main { text-align: center; } code { color: #61dafb; }"
+        }
+    } else {
+        Set-ProjectProperty $package.devDependencies 'tailwindcss' 'latest'; Set-ProjectProperty $package.devDependencies '@tailwindcss/vite' 'latest'
+        $files = @{
+            'index.html' = '<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tailwind CSS app</title></head><body><main class="min-h-screen grid place-items-center bg-slate-950 text-white"><section class="text-center"><h1 class="text-4xl font-bold text-sky-400">Tailwind CSS is ready</h1><p class="mt-4 text-slate-300">Edit index.html to get started.</p></section></main><script type="module" src="/src/main.js"></script></body></html>'
+            'vite.config.js' = "import { defineConfig } from 'vite'`nimport tailwindcss from '@tailwindcss/vite'`n`nexport default defineConfig({ plugins: [tailwindcss()] })`n"
+            'src/main.js' = "import './style.css'`n"
+            'src/style.css' = "@import 'tailwindcss';`n"
+        }
+    }
+    foreach ($relative in $files.Keys) {
+        $path = Join-Path $Project $relative
+        if (!(Test-Path -LiteralPath $path)) { $parent = Split-Path $path -Parent; New-Item -ItemType Directory -Path $parent -Force | Out-Null; Set-Content -LiteralPath $path -Value $files[$relative] -Encoding utf8 }
+    }
+    Set-Content -LiteralPath $packagePath -Value ($package | ConvertTo-Json -Depth 20) -Encoding utf8
+}
+function Install-NodeProject([string]$Project, [string]$Kind) {
+    Refresh-TaskEnvironment
+    $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
+    if (!$npm) { throw "$Kind setup needs Node.js and npm. Resolve the Node setup failure, then retry." }
+    Set-NodeProjectFiles $Project $Kind
+    Push-Location -LiteralPath $Project
+    try {
+        & $npm.Source install
+        if ($LASTEXITCODE -ne 0) { throw "$Kind npm dependency installation failed: $LASTEXITCODE" }
+        & $npm.Source run build
+        if ($LASTEXITCODE -ne 0) { throw "$Kind starter project build failed: $LASTEXITCODE" }
+    } finally { Pop-Location }
+}
+function Test-NodeProject([string]$Project, [string[]]$Packages) {
+    Refresh-TaskEnvironment
+    $node = Get-Command node.exe -ErrorAction SilentlyContinue
+    if (!$node -or !(Test-Path -LiteralPath (Join-Path $Project 'package.json'))) { return $false }
+    foreach ($package in $Packages) { if (!(Test-Path -LiteralPath (Join-Path $Project ("node_modules\" + $package + '\package.json')))) { return $false } }
+    Push-Location -LiteralPath $Project
+    try { & $node.Source (Join-Path $Project 'node_modules\vite\bin\vite.js') build 2>&1 | Out-Null; return ($LASTEXITCODE -eq 0) }
+    finally { Pop-Location }
+}
+function Test-Emscripten {
+    $emcc = Join-Path (Get-EmscriptenRoot) 'upstream\emscripten\emcc.bat'
+    if (!(Test-Path -LiteralPath $emcc)) { return $false }
+    & $emcc --version 2>&1 | Out-Null
+    return ($LASTEXITCODE -eq 0)
+}
+function Install-Emscripten {
+    $root = Get-EmscriptenRoot
+    $git = Find-GitTool 'git'
+    if (!$git) { throw 'Emscripten setup needs Git. Resolve the Git setup failure, then retry.' }
+    if (!(Test-Path -LiteralPath (Join-Path $root '.git'))) {
+        if (Test-Path -LiteralPath $root) { throw "The Emscripten SDK folder exists but is not a Git checkout: $root. Move it and retry." }
+        New-Item -ItemType Directory -Path (Split-Path $root -Parent) -Force | Out-Null
+        & $git clone --depth 1 https://github.com/emscripten-core/emsdk.git $root
+        if ($LASTEXITCODE -ne 0) { throw "Cloning the official Emscripten SDK failed: $LASTEXITCODE" }
+    } else {
+        & $git -C $root pull --ff-only
+        if ($LASTEXITCODE -ne 0) { throw "Updating the Emscripten SDK failed: $LASTEXITCODE" }
+    }
+    $setup = Join-Path $root 'emsdk.bat'
+    if (!(Test-Path -LiteralPath $setup)) { throw "Emscripten SDK bootstrap script is missing: $setup" }
+    Push-Location -LiteralPath $root
+    try {
+        & $setup install latest
+        if ($LASTEXITCODE -ne 0) { throw "Emscripten latest SDK installation failed: $LASTEXITCODE" }
+        & $setup activate latest
+        if ($LASTEXITCODE -ne 0) { throw "Emscripten SDK activation failed: $LASTEXITCODE" }
+        $launcher = Join-Path $root 'Open Emscripten Command Prompt.cmd'
+        if (!(Test-Path -LiteralPath $launcher)) { Set-Content -LiteralPath $launcher -Encoding ascii -Value "@echo off`r`ncall `"%~dp0emsdk_env.bat`"`r`nif errorlevel 1 exit /b %errorlevel%`r`ncd /d `"%USERPROFILE%`"`r`ncmd /k`r`n" }
+    } finally { Pop-Location }
+    if (!(Test-Emscripten)) { throw 'Emscripten setup ran but emcc did not pass its version check. Retry setup.' }
 }
 
 function Test-WingetPackage([string]$Id, [string]$Source = 'winget') {
@@ -465,6 +566,9 @@ function Test-Task {
         'desktop-apps' { return (Test-DesktopApps) }
         'nvm-windows' { return (Test-NvmSetup) }
         'playwright' { return (Test-Playwright) }
+        'react' { return (Test-NodeProject (Get-ReactProject) @('react','react-dom','lucide-react','vite','@vitejs/plugin-react')) }
+        'tailwind' { return (Test-NodeProject (Get-TailwindProject) @('tailwindcss','@tailwindcss/vite','vite')) }
+        'emscripten' { return (Test-Emscripten) }
         'codex' { return [bool](Get-AppxPackage | Where-Object { $_.Name -match '(^|[.])Codex($|[.])|OpenAI.*Codex' } | Select-Object -First 1) }
         'dark-mode' {
             $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
@@ -493,7 +597,6 @@ function Test-Task {
         'googledrive' { return (Test-WingetPackage 'Google.GoogleDrive') }
         'chatgpt' { return (Test-WingetPackage '9NT1R1C2HH7J' -Source 'msstore') }
         'ahk' { return (Test-WingetPackage 'AutoHotkey.AutoHotkey') }
-        'blender' { return (Test-WingetPackage 'BlenderFoundation.Blender') }
         'clipchamp' { return (Test-WingetPackage '9P1J8S7CCWWT' -Source 'msstore') }
         'davinciresolve' { return (Test-DaVinciResolve) }
         'githubdesktop' { return (Test-WingetPackage 'GitHub.GitHubDesktop') }
@@ -637,6 +740,9 @@ try {
             foreach ($app in @(Get-DesktopApps)) { New-DesktopShortcut $app.Name $app.Target -Arguments $app.Arguments -WorkingDirectory $app.WorkingDirectory }
         }
         'playwright' { Install-Playwright }
+        'react' { Install-NodeProject (Get-ReactProject) 'react' }
+        'tailwind' { Install-NodeProject (Get-TailwindProject) 'tailwind' }
+        'emscripten' { Install-Emscripten }
         'nvm-windows' {
             Refresh-TaskEnvironment
             $nvm = Find-Nvm
@@ -684,7 +790,6 @@ try {
         'googledrive'    { Install-WingetPackage 'Google.GoogleDrive' }
         'chatgpt'        { Install-WingetPackage '9NT1R1C2HH7J' -Source 'msstore' }
         'ahk' { Install-WingetPackage 'AutoHotkey.AutoHotkey' }
-        'blender' { Install-WingetPackage 'BlenderFoundation.Blender' }
         'clipchamp' { Install-WingetPackage '9P1J8S7CCWWT' -Source 'msstore' }
         'davinciresolve' { Open-ManualInstallPage 'https://www.blackmagicdesign.com/products/davinciresolve' 'DaVinci Resolve requires downloading and completing setup on Blackmagic Design official site.' }
         'githubdesktop' { Install-WingetPackage 'GitHub.GitHubDesktop' }

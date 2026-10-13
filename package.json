@@ -1,6 +1,6 @@
 {
   "name": "installstreet",
-  "version": "1.5.6",
+  "version": "1.5.8",
   "private": true,
   "description": "InstallStreet desktop setup",
   "main": "electron/main.js",
