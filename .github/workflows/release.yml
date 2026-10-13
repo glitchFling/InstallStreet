@@ -53,7 +53,6 @@ jobs:
             if ($tagCommit -ne $headCommit) { throw 'This version tag already points to another commit. Bump the version before releasing.' }
           }
           "tag=$tag" >> $env:GITHUB_OUTPUT
-          "RELEASE_TAG=$tag" >> $env:GITHUB_ENV
 
       - name: Install locked dependencies
         run: |
@@ -79,27 +78,12 @@ jobs:
           & ./VaultHouse/verify-fresh-pc.ps1
           & ./VaultHouse/verify-admin.ps1 -Paths @('dist\native\InstallStreet.exe','dist\native\StorageSense.exe','dist\native\resources\backend\InstallStreet.Cli.exe','dist\native\resources\backend\UpdateHelper.exe','dist\native\resources\backend\OscdimgSetup.exe')
 
-      - name: Generate checksums and release notes
+      - name: Generate checksums
         run: |
           $files = @(Get-ChildItem dist -File | Where-Object { $_.Extension -in @('.msi','.zip') } | Sort-Object Name)
           if ($files.Count -ne 2) { throw 'Expected exactly one MSI and one portable ZIP.' }
           $checksums = $files | ForEach-Object { (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() + '  ' + $_.Name }
           Set-Content dist/SHA256SUMS.txt -Value $checksums -Encoding ascii
-          $notes = @(
-            "InstallStreet $env:RELEASE_TAG for Windows x64.",
-            '',
-            '- MSI: install InstallStreet with desktop and Start menu shortcuts.',
-            '- Portable ZIP: extract and run InstallStreet.exe.',
-            '- Native C++ window host uses the shared WebView2 Runtime, installing it automatically when needed; the existing Node.js setup backend and task DLLs are bundled.',
-            '- StorageSense.exe provides administrator-only Windows checks, repair, and supported cleanup; each operation is started explicitly.',
-            '- Administrator access is required. Canceling UAC stops startup.',
-            '- Select apps and optional Windows settings, save presets, or prepare Windows 10/11 installation media.',
-            '- Public update checks and downloads require no GitHub token.',
-            '- Missing Oscdimg installs automatically; task failures do not stop remaining setup or StorageSense tasks.',
-            '- Git identity changes require a separate confirmation. gh authentication is unchanged.',
-            '- Binaries are unsigned. SHA256SUMS.txt contains artifact hashes.'
-          )
-          Set-Content dist/RELEASE_NOTES.md -Value $notes -Encoding utf8
 
       - name: Save release artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -111,7 +95,6 @@ jobs:
             dist/*.msi
             dist/*.zip
             dist/SHA256SUMS.txt
-            dist/RELEASE_NOTES.md
 
   release:
     name: Publish GitHub release
@@ -136,7 +119,7 @@ jobs:
           draft: false
           make_latest: true
           prerelease: false
-          body_path: release/RELEASE_NOTES.md
+          generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
             release/*.msi
